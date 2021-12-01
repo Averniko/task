@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Url} from "../model/Models";
-import {urlApi} from "../utils/Api";
+import {backendURL, urlApi} from "../utils/Api";
 
 const Urls: React.FunctionComponent = () => {
     const [subpartField, setSubpart] = useState<string>("");
@@ -41,7 +41,7 @@ const Urls: React.FunctionComponent = () => {
 
     urls.forEach((url) => {
         items.push(<tr>
-            <td><a href={url.subpart}>{url.subpart}</a></td>
+            <td><a href={`${backendURL}/${url.subpart}`}>{url.subpart}</a></td>
             <td><a href={url.redirect}>{url.redirect}</a></td>
         </tr>)
     });
