@@ -1,6 +1,8 @@
+from django.http import HttpResponseRedirect
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from urls.models import Url
 from urls.serializers import UrlSerializer
@@ -34,3 +36,13 @@ class UrlView(generics.ListCreateAPIView):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class RedirectView(APIView):
+    def get(self, request, path, *args, **kwargs):
+        session_key = request.session.session_key
+        try:
+            url = Url.objects.get(session_key=session_key, subpart=path)
+        except Url.DoesNotExist:
+            return Response(status=400)
+        return HttpResponseRedirect(redirect_to=url.redirect)
