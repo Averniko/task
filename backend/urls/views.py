@@ -1,3 +1,5 @@
+import logging
+
 from django.http import HttpResponseRedirect
 from rest_framework import generics, permissions, status
 from rest_framework.pagination import PageNumberPagination
@@ -45,6 +47,9 @@ class RedirectView(APIView):
         cache = r.hmget(session_key, keys=[path]) or {}
         if cache and cache[0] is not None:
             redirect = cache[0].decode("utf-8")
+            logging.info(
+                f"Url get from cache. session_key={session_key} subpart={path} redirect={redirect}"
+            )
         else:
             try:
                 url = Url.objects.get(session_key=session_key, subpart=path)
@@ -52,6 +57,12 @@ class RedirectView(APIView):
                 old_cache = r.hgetall(session_key) or {}
                 old_cache[url.subpart] = url.redirect
                 r.hmset(session_key, old_cache)
+                logging.info(
+                    f"Url added to cache. session_key={session_key} subpart={path} redirect={redirect}"
+                )
             except Url.DoesNotExist:
+                logging.error(
+                    f"Requested url does not exist. session_key={session_key} subpart={path}"
+                )
                 return Response(status=400)
         return HttpResponseRedirect(redirect_to=redirect)
