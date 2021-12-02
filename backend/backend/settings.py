@@ -163,7 +163,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
 
-r = redis.Redis(host="redis", port=6379, db=0)
+REDIS_HOST = env("REDIS_HOST")
+r = redis.Redis(host=REDIS_HOST, port=6379, db=0)
 r.ping()
 
 CELERY_TIMEZONE = "Europe/Moscow"

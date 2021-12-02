@@ -32,7 +32,7 @@ const Urls: React.FunctionComponent = () => {
         const url: Url = {subpart: subpartField, redirect: redirectField}
         urlApi.create(url)
             .then(response => {
-                setUrls([url, ...urls])
+                setUrls([{subpart: response.data.subpart, redirect: response.data.redirect}, ...urls])
                 setError("")
                 console.log(response)
             })
@@ -75,7 +75,7 @@ const Urls: React.FunctionComponent = () => {
             <table className="table">
                 <thead>
                 <tr>
-                    <th scope="col">Subpart</th>
+                    <th scope="col">Short url</th>
                     <th scope="col">Url</th>
                 </tr>
                 </thead>
