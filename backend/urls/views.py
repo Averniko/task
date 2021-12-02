@@ -4,6 +4,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from backend.settings import r
 from urls.models import Url
 from urls.serializers import UrlSerializer
 
@@ -41,8 +42,16 @@ class UrlView(generics.ListCreateAPIView):
 class RedirectView(APIView):
     def get(self, request, path, *args, **kwargs):
         session_key = request.session.session_key
-        try:
-            url = Url.objects.get(session_key=session_key, subpart=path)
-        except Url.DoesNotExist:
-            return Response(status=400)
-        return HttpResponseRedirect(redirect_to=url.redirect)
+        cache = r.hmget(session_key, keys=[path]) or {}
+        if cache:
+            redirect = cache[0].decode("utf-8")
+        else:
+            try:
+                url = Url.objects.get(session_key=session_key, subpart=path)
+                redirect = url.redirect
+                old_cache = r.hgetall(session_key) or {}
+                old_cache[url.subpart] = url.redirect
+                r.hmset(session_key, old_cache)
+            except Url.DoesNotExist:
+                return Response(status=400)
+        return HttpResponseRedirect(redirect_to=redirect)

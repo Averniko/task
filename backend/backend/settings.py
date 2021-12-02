@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 import environ
+import redis
 
 env = environ.Env(DEBUG=(bool, False))
 
@@ -158,3 +159,5 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost",
     "http://localhost:3000",
 ]
+
+r = redis.Redis()

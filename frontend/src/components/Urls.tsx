@@ -6,6 +6,7 @@ const Urls: React.FunctionComponent = () => {
     const [subpartField, setSubpart] = useState<string>("");
     const [redirectField, setRedirect] = useState<string>("");
     const [urls, setUrls] = useState<Url[]>([]);
+    const [error, setError] = useState<string>("");
 
     useEffect(() => {
         urlApi.list()
@@ -32,16 +33,23 @@ const Urls: React.FunctionComponent = () => {
         urlApi.create(url)
             .then(response => {
                 setUrls([url, ...urls])
+                setError("")
                 console.log(response)
             })
-            .catch(console.log);
+            .catch(error => {
+                if (error.response && error.response.status == 400) {
+                    setError(JSON.stringify(error.response.data))
+                } else {
+                    console.log('Error', error.message)
+                }
+            });
     }
 
     const items: any[] = [];
 
     urls.forEach((url) => {
         items.push(<tr>
-            <td><a href={`${backendURL}/${url.subpart}`}>{url.subpart}</a></td>
+            <td><a href={`${backendURL}/${url.subpart}`}>{`${backendURL}/${url.subpart}`}</a></td>
             <td><a href={url.redirect}>{url.redirect}</a></td>
         </tr>)
     });
@@ -61,6 +69,9 @@ const Urls: React.FunctionComponent = () => {
                 </div>
                 <button type="submit" className="btn btn-primary m-2">Submit</button>
             </form>
+            {error && <div className="alert alert-danger">
+                {error}
+            </div>}
             <table className="table">
                 <thead>
                 <tr>
