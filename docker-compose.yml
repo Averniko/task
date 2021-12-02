@@ -43,9 +43,13 @@ services:
 
   frontend:
     container_name: frontend
+    env_file:
+      - ./frontend/.env
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
     ports:
     - 8080:80
 
