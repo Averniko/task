@@ -12,11 +12,23 @@ services:
     env_file:
       - ./backend/.env
     depends_on:
+      - migration
       - redis
       - mysql
 
+  migration:
+    image: backend
+    command: python manage.py migrate --noinput
+    depends_on:
+      - mysql
+    env_file:
+      - ./backend/.env
+
   mysql:
     image: mysql
+    container_name: mysql
+    ports:
+      - 3306:3306
     env_file:
       - ./backend/.env
 
@@ -45,7 +57,7 @@ services:
   celery:
     container_name: urls-celery
     image: backend
-    command: celery -A bot worker -l info --pool=solo
+    command: celery -A backend worker -l info --pool=solo
     restart: always
     env_file:
       - ./backend/.env
@@ -55,7 +67,7 @@ services:
   celery-beat:
     container_name: urls-celery-beat
     image: backend
-    command: celery -A bot beat -l info
+    command: celery -A backend beat -l info
     restart: always
     env_file:
       - ./backend/.env
