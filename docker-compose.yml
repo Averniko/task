@@ -1,0 +1,63 @@
+version: '3.3'
+
+services:
+  backend:
+    image: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+      - mysql
+
+  mysql:
+    image: mysql
+    env_file:
+      - ./backend/.env
+
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+      - frontend
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+    - 8080:80
+
+  redis:
+    container_name: urls-redis
+    image: redis
+    restart: always
+
+  celery:
+    container_name: urls-celery
+    image: backend
+    command: celery -A bot worker -l info --pool=solo
+    restart: always
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+
+  celery-beat:
+    container_name: urls-celery-beat
+    image: backend
+    command: celery -A bot beat -l info
+    restart: always
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
