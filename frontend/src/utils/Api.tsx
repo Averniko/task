@@ -2,6 +2,7 @@ import axios from "axios";
 import {Url} from "../model/Models";
 
 export const backendURL = process.env.REACT_APP_BACKEND_URL;
+// export const backendURL = "http:/backend:8000";
 export const apiURL = `${backendURL}/api`;
 
 export const api = axios.create({

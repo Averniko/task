@@ -24,6 +24,7 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . $APP_HOME
+RUN rm .env*
 # chown all the files to the app user
 RUN chown -R url-shortener:url-shortener $APP_HOME
 # change to the app user

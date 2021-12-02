@@ -20,5 +20,5 @@ from urls.views import RedirectView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(("api.urls", "api"), namespace="api")),
-    re_path(r"^(?P<path>.*)/$", RedirectView.as_view()),
+    re_path(r"^url/(?P<path>.*)/$", RedirectView.as_view()),
 ]

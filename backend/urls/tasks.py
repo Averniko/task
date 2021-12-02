@@ -10,6 +10,8 @@ from urls.models import Url
 def clean():
     dt = datetime.now()
     ids = Session.objects.filter(expire_date__lt=dt).values_list('pk', flat=True)
-    r.delete(list(ids.all()))
+    ids_list = list(ids.all())
+    for id in ids_list:
+        r.delete(id)
     Url.objects.filter(session_key__in=ids).delete()
 

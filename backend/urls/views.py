@@ -43,7 +43,7 @@ class RedirectView(APIView):
     def get(self, request, path, *args, **kwargs):
         session_key = request.session.session_key
         cache = r.hmget(session_key, keys=[path]) or {}
-        if cache:
+        if cache and cache[0] is not None:
             redirect = cache[0].decode("utf-8")
         else:
             try:

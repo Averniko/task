@@ -49,7 +49,7 @@ const Urls: React.FunctionComponent = () => {
 
     urls.forEach((url) => {
         items.push(<tr>
-            <td><a href={`${backendURL}/${url.subpart}`}>{`${backendURL}/${url.subpart}`}</a></td>
+            <td><a href={`http://localhost/url/${url.subpart}`}>{`http://localhost/url/${url.subpart}`}</a></td>
             <td><a href={url.redirect}>{url.redirect}</a></td>
         </tr>)
     });

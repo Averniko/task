@@ -162,7 +162,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
 
-r = redis.Redis()
+r = redis.Redis(host="redis", port=6379, db=0)
+r.ping()
 
 CELERY_TIMEZONE = "Europe/Moscow"
 CELERY_TASK_TRACK_STARTED = True

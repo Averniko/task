@@ -57,6 +57,8 @@ services:
     container_name: urls-redis
     image: redis
     restart: always
+    ports:
+    - 6379:6379
 
   celery:
     container_name: urls-celery
